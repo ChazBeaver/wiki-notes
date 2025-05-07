@@ -7,6 +7,20 @@ The goal is to document workflows, commands, and concepts that I don’t use fre
 and to make them instantly searchable with tools like [`fzf`](https://github.com/junegunn/fzf) and [`ripgrep`](https://github.com/BurntSushi/ripgrep).
 
 ---
+## 🧩 Dependencies
+
+To use the full functionality of `devnotes`, make sure the following tools are installed on your system:
+
+| Tool      | Purpose                         | Install Reference                              |
+|-----------|----------------------------------|------------------------------------------------|
+| [`fzf`](https://github.com/junegunn/fzf)     | Fuzzy file selection and preview               | [`brew install fzf`](https://github.com/junegunn/fzf#using-homebrew) or [`apt install fzf`](https://github.com/junegunn/fzf#debianubuntu) |
+| [`ripgrep`](https://github.com/BurntSushi/ripgrep) | Fast text search inside files           | `brew install ripgrep` or `apt install ripgrep` |
+| [`bat`](https://github.com/sharkdp/bat)      | Syntax-highlighted file previews (optional)    | `brew install bat` or `apt install bat` |
+| [`nvim`](https://neovim.io/)                 | Opens Markdown files (or any editor via `$EDITOR`) | `brew install neovim` or `apt install neovim` |
+
+> **Note:** These tools are only required for the search functionality. You can still browse the docs manually without them.
+
+---
 
 ## 📁 Project Structure
 
@@ -21,7 +35,7 @@ and to make them instantly searchable with tools like [`fzf`](https://github.com
 Quickly search through notes and files using `fzf`:
 
 ```bash
-bash scripts/fzf-search.sh
+bash scripts/wiki.sh
 ```
 
 Or grep through contents with preview:
