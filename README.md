@@ -1,6 +1,6 @@
-# 🛠️ devnotes
+# 🛠️ Wiki-Notes
 
-Welcome to **devnotes** — my personal DevOps knowledge base.
+Welcome to **Wiki-Notes** — my personal DevOps knowledge base.
 
 This repository contains curated notes, walkthroughs, cheat sheets, and reusable code snippets I’ve written or collected over time.
 The goal is to document workflows, commands, and concepts that I don’t use frequently enough to memorize —
@@ -10,7 +10,7 @@ and to make them instantly searchable with tools like [`fzf`](https://github.com
 
 ## 🧩 Dependencies
 
-To use the full functionality of `devnotes`, make sure the following tools are installed on your system:
+To use the full functionality of `Wiki-Notes`, make sure the following tools are installed on your system:
 
 | Tool      | Purpose                         | Install Reference                              |
 |-----------|----------------------------------|------------------------------------------------|
