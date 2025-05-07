@@ -7,6 +7,7 @@ The goal is to document workflows, commands, and concepts that I don’t use fre
 and to make them instantly searchable with tools like [`fzf`](https://github.com/junegunn/fzf) and [`ripgrep`](https://github.com/BurntSushi/ripgrep).
 
 ---
+
 ## 🧩 Dependencies
 
 To use the full functionality of `devnotes`, make sure the following tools are installed on your system:
@@ -42,6 +43,37 @@ Or grep through contents with preview:
 
 ```bash
 rg "<keyword>" docs examples | fzf --preview 'bat --style=numbers --color=always --line-range :100 {1}'
+```
+
+---
+
+## 🪶 Lightweight Option
+
+If you prefer not to install `bat` or `ripgrep`, you can use the lighter version of the search script:
+
+```bash
+bash scripts/wiki-lite.sh
+```
+
+This version uses only `find`, `cat`, `grep`, and `fzf`.
+
+It previews headings inside the selected Markdown file (using `grep '^#'`) and optionally opens the file using your default `$EDITOR`.
+
+### Example Output
+```
+================= Preview: docs/git/github-ssh-setup.md ================
+# Setting up SSH with GitHub
+## Step 1: Generate key
+## Step 2: Add key to ssh-agent
+## Step 3: Add key to GitHub
+========================================================================
+Open in editor? [y/N]:
+```
+
+You can also create an alias for convenience:
+
+```bash
+alias wikilite="$WIKINOTES_DIR/scripts/wiki-lite.sh"
 ```
 
 ---
