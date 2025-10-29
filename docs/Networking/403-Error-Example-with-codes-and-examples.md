@@ -198,4 +198,84 @@ GET http://127.0.0.1:54000/ -> 200 OK
  - Next step: Try adding headers that browsers normally send.
 
 
-## 
+## Pod test with browser-style headers
+
+below is a command derived from ChatGPT to help mimic/simulate what the gateway/browser sends to see if the app expexts `Host`/`X-Forwarded-proto` and behaves differently with them.
+
+```bash
+k -n my-app exec deploy/my-app -c my-app -- \
+  node -e "require('http').get({
+    host:'127.0.0.1',port:54000,path:'/ui',
+    headers:{
+      'Host':'application.something.com',
+      'X-Forwarded-Proto':'https',
+      'X-Forwarded-Host':'application.something.com',
+      'X-Forwarded-Port':'443',
+      'User-Agent':'Mozilla/5.0',
+      'Origin':'https://application.something.com'
+    }},r=>{console.log('STATUS',r.statusCode);r.resume();});"
+```
+
+What it told us: With those headers, the app is happy → confirms it relies on them (proxy-aware behavior).
+
+Conclusion: Ensure the gateway passes these (Envoy normally does). Header rewrites weren’t strictly required long-term, but this proved the point.
+
+
+## HEAD test returns 405
+
+Why: Blackbox/monitoring often uses `HEAD`. We needed to confirm the API simply doesn’t support `HEAD`.
+
+```bash
+curl -skI -X HEAD https://application.something.com/api/op/state/sse
+```
+
+Result: `405 Method Not Allowed` (and `Allow: GET`).
+What it told us: That endpoint only supports `GET`. HEAD will always look “bad.”
+Why use `curl -I -X HEAD`?
+
+`-I` asks for headers only (fast, no body).
+
+`-X HEAD` forces the exact method (mirrors monitoring behavior).
+
+This precisely reproduces the monitor’s probe.
+
+Fix: Point monitoring to `GET /ui` (or change probe method to `GET`) to avoid false alarms.
+
+
+## Browser simulation with SSE
+
+Why: Prove the endpoint works when called the way a browser does (Server-Sent Events).
+
+Command:
+
+```bash
+curl -sk \
+  -H 'Accept: text/event-stream' \
+  https://application.something.com/api/op/state/sse \
+  --max-time 5
+```
+
+
+(optional, even closer to browser)
+
+```bash
+curl -sk \
+  -H 'Origin: https://application.something.com' \
+  -H 'User-Agent: Mozilla/5.0' \
+  -H 'Accept: text/event-stream' \
+  https://application.something.com/api/op/state/sse \
+  --max-time 5
+```
+
+
+Result: You saw event: state-report → success.
+What it told us: The API is fine for real browser usage. The “errors” were the method mismatch (HEAD vs GET), not an app failure.
+
+
+## Bonus: What each curl command did and why we used it
+Command	                  Purpose	                  Example
+curl -k 	    Ignore certificate errors (TLS)	      curl -k https://site
+curl -I	      Only fetch HTTP headers, no body	      curl -k -I https://site
+curl -X       HEAD	Force HTTP method to HEAD	      curl -k -I -X HEAD https://site
+curl -H	      Add HTTP headers manually	      curl -H 'Header: value' https://site
+curl --max-time	      Stop hanging if response streams  	    curl --max-time 5 https://site
