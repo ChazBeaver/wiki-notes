@@ -2,6 +2,21 @@
 # GitLab PAT Setup (Scoped to GitLab Only)
 
 This guide ensures that your GitLab Personal Access Token (PAT) is securely stored in macOS Keychain and only ever used by Git for GitLab, not GitHub.
+---
+
+## Step 0: Ensure your .gitconfig file is in order
+
+This is an example of what your .gitconfig should look like before starting the PAT process
+
+```yaml
+[user]
+  name = UserName
+  email = UserName@email.com
+[init]
+	defaultBranch = main
+[credential]
+  helper = osxkeychain
+```
 
 ---
 
